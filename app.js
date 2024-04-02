@@ -36,6 +36,8 @@ app.use(`${api}/categories`, categoriesRoute);
 app.use(`${api}/users`, userRoute);
 app.use(`${api}/orders`, orderRoute);
 
+app.set("port", process.env.PORT || 3000);
+
 mongoose.Promise = global.Promise;
 
 // Connecting to the database
@@ -54,6 +56,10 @@ mongoose
   });
 
 // listen for requests
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
+// app.listen(app.get("port"), () => {
+//   console.log(`Express running → On PORT : ${server.address().port}`);
+// });
+
+const server = app.listen(app.get("port"), () => {
+  console.log(`Express running → On PORT : ${server.address().port}`);
 });
