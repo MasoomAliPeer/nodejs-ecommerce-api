@@ -28,13 +28,14 @@ const categoriesRoute = require("./routes/categories");
 const productRoute = require("./routes/products");
 const userRoute = require("./routes/users");
 const orderRoute = require("./routes/orders");
-
+const subscriberRoute = require("./routes/subscribers");
 // Routes
 
 app.use(`${api}/products`, productRoute);
 app.use(`${api}/categories`, categoriesRoute);
 app.use(`${api}/users`, userRoute);
 app.use(`${api}/orders`, orderRoute);
+app.use(`${api}/subscribers`, subscriberRoute);
 
 app.set("port", process.env.PORT || 3000);
 
