@@ -12,6 +12,7 @@ const subscribeSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true, // Enforce uniqueness on the email field
   },
 });
 

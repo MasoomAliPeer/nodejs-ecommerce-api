@@ -1,70 +1,37 @@
 const express = require("express");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const Subscribe = require("../models/subscribe");
 
-// router.get("/", async (req, res) => {
-//   const userList = await User.find().select("-passwordHash");
-
-//   if (!userList) {
-//     res.status(500).json({ success: false });
-//   }
-//   res.send(userList);
-// });
-
-// router.get("/:id", async (req, res) => {
-//   const user = await User.findById(req.params.id).select("-passwordHash");
-
-//   if (!user) {
-//     res.status(500).json({
-//       success: false,
-//       message: "The user with the given ID not exists",
-//     });
-//   }
-//   res.status(200).send(user);
-// });
-
 router.post("/register", async (req, res) => {
-  let subscribe = new Subscribe({
-    name: req.body.name,
-    gender: req.body.gender,
-    email: req.body.email,
-  });
+  try {
+    // Extract data from the request body
+    const { name, gender, email } = req.body;
 
-  subscribe = await subscribe.save();
+    // Create a new subscriber object
+    const subscribe = new Subscribe({
+      name,
+      gender,
+      email,
+    });
 
-  if (!subscribe) return res.status(404).send("Subscribe cannot be created");
-  res.send(subscribe);
+    // Save the subscriber to the database
+    const savedSubscribe = await subscribe.save();
+
+    // Send the saved subscriber as the response
+    res.status(201).send(savedSubscribe);
+  } catch (error) {
+    // Log the error to the console
+    console.error("Error saving subscriber:", error);
+
+    // Check if the error is due to duplicate key violation
+    if (error.code === 11000 && error.keyPattern.email) {
+      return res.status(400).send("Email address is already registered");
+    }
+
+    // Handle other types of errors
+    res.status(500).send("Internal Server Error");
+  }
 });
-
-// router.delete("/:id", (req, res) => {
-//   User.findByIdAndRemove(req.params.id)
-//     .then((user) => {
-//       if (user) {
-//         return res
-//           .status(200)
-//           .json({ success: true, message: "User deleted successfully" });
-//       } else {
-//         return res
-//           .status(404)
-//           .json({ success: false, message: "User cannot find" });
-//       }
-//     })
-//     .catch((err) => {
-//       return res.status(400).json({ success: false, error: err });
-//     });
-// });
-
-// router.get("/get/count", async (req, res) => {
-//   const userCount = await User.countDocuments((count) => count);
-//   if (!userCount) {
-//     res.status(500), json({ success: false });
-//   }
-//   res.status(200).send({
-//     userCount: userCount,
-//   });
-// });
 
 module.exports = router;
